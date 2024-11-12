@@ -1,25 +1,13 @@
-script:
+--[[
+
 loadstring(game:HttpGet("https://raw.githubusercontent.com/subin1510/ybascript-v0.1/refs/heads/main/ybascript01.lua"))()
-this is beta version,i will update more later
+
+this is only alpha version,i will update more later
 
 next update will be:
 auto farm item + hop server
 auto farm use arrow / rokaka (skip cutsence)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
---[[
  .____                  ________ ___.    _____                           __                
  |    |    __ _______   \_____  \\_ |___/ ____\_ __  ______ ____ _____ _/  |_  ___________ 
  |    |   |  |  \__  \   /   |   \| __ \   __\  |  \/  ___// ___\\__  \\   __\/  _ \_  __ \
