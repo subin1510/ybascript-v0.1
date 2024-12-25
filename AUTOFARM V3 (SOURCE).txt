@@ -329,7 +329,7 @@ function mainTP() -- Finds the item
                                             travelTo(part)
                                             if (part.Position - plr.Position).Magnitude < 5 then
                                                 maxItems()
-						task.wait(0.2)
+						task.wait(0.3)
                                                 fireproximityprompt(proxPrompt, 4)
                                             end
                                             task.wait(0.05)
@@ -359,7 +359,7 @@ function mainTP() -- Finds the item
                                             travelTo(child)  -- Di chuyển đến vị trí của MeshPart
                                             if (child.Position - plr.Position).Magnitude < 5 then  -- Kiểm tra khoảng cách
                                                 maxItems()  -- Gọi hàm maxItems()
-						task.wait(0.2)
+						task.wait(0.3)
                                                 fireproximityprompt(proxPrompt, 4)  -- Kích hoạt proximity prompt
                                             end
                                             task.wait(0.05)  -- Chờ một khoảng thời gian trước khi tiếp tục
