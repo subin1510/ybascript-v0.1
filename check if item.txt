@@ -3,7 +3,7 @@ while game.Players.LocalPlayer.PlayerGui:FindFirstChild("LoadingScreen1") ~= nil
     wait(0.1)  -- Wait for a small amount of time (0.1 seconds) before checking again
 end
 
-wait(25)  
+wait(5)  
 local player = game.Players.LocalPlayer  -- hoặc cách khác để xác định player
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
