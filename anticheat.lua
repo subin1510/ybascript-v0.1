@@ -1,3 +1,4 @@
+
 if not game.Players.LocalPlayer.PlayerGui:FindFirstChild("HUD") then
     local HUD = game:GetService("ReplicatedStorage").Objects.HUD:Clone()
     HUD.Parent = game.Players.LocalPlayer.PlayerGui
@@ -26,7 +27,7 @@ pcall(function()
         end
     end
 end)
-wait(1)
+
 local OldNamecallTP
 OldNamecallTP = hookmetamethod(game, '__namecall', newcclosure(function(self, ...)
     local Arguments = {...}
