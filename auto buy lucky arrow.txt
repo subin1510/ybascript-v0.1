@@ -1,5 +1,3 @@
-wait(10)
-
 local function buyarrow()
     local player = game:GetService("Players").LocalPlayer
     local backpack = player:FindFirstChild("Backpack")
