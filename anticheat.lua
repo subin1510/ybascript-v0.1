@@ -1,14 +1,31 @@
+if not game.Players.LocalPlayer.PlayerGui:FindFirstChild("HUD") then
+    local HUD = game:GetService("ReplicatedStorage").Objects.HUD:Clone()
+    HUD.Parent = game.Players.LocalPlayer.PlayerGui
+end
 
-repeat
-    wait()
-until game:IsLoaded()
+game.Players.LocalPlayer.Character:WaitForChild("RemoteEvent"):FireServer("PressedPlay")
 
--- Check LoadingScreen1 removal or timeout
-local startTime = tick()
-repeat
-    wait()
-    if game.Players.LocalPlayer.PlayerGui:FindFirstChild("LoadingScreen1") == nil then
+pcall(function()
+    game.Players.LocalPlayer.PlayerGui:FindFirstChild("LoadingScreen1"):Destroy()
+end)   
 
+task.wait(.5)
+
+pcall(function()
+    game.Players.LocalPlayer.PlayerGui:FindFirstChild("LoadingScreen"):Destroy()
+end)
+
+pcall(function()
+    workspace.LoadingScreen.Song.Playing = false
+end)
+
+pcall(function()
+    for i,v in pairs(game.Lighting:GetChildren()) do
+        if v.Name == "DepthOfField" then
+            v.Enabled = false
+        end
+    end
+end)
 local OldNamecallTP
 OldNamecallTP = hookmetamethod(game, '__namecall', newcclosure(function(self, ...)
     local Arguments = {...}
