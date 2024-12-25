@@ -1,5 +1,3 @@
-wait(10)
-
 getgenv().farmitems = {
     -- items to farm and sell
     ["Rokakaka"] = true,
