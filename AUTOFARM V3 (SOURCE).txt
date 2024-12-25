@@ -493,7 +493,7 @@ end)
     teleportSequentially()
     wait(0.1)
     sell = true    -- Bật bán item khi đầy
-    wait(2.25)
+    wait(0.5)
     tpOn = true   -- Bật teleport
     coroutine.wrap(mainTP)()  -- Bắt đầu teleport tự động
 end
