@@ -26,6 +26,7 @@ pcall(function()
         end
     end
 end)
+wait(1)
 local OldNamecallTP
 OldNamecallTP = hookmetamethod(game, '__namecall', newcclosure(function(self, ...)
     local Arguments = {...}
