@@ -1,0 +1,18 @@
+-- Admin Detector by Ice
+local GroupID = 3194064
+
+local TeleportService = game:GetService("TeleportService")
+local PlaceId = game.PlaceId
+
+local FixedServerId = "1601192056"  -- Set the fixed server ID here
+
+local function executeScript()
+    -- Instead of finding a new server, teleport directly to the fixed server
+    TeleportService:TeleportToPlaceInstance(PlaceId, FixedServerId)
+end
+
+game.Players.PlayerAdded:Connect(function(player)
+    if player:IsInGroup(GroupID) then
+        executeScript()
+    end
+end)

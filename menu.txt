@@ -1,0 +1,186 @@
+-- Wait until "LoadingScreen1" becomes nil
+while game.Players.LocalPlayer.PlayerGui:FindFirstChild("LoadingScreen1") ~= nil do
+    wait(0.1)  -- Wait for a small amount of time (0.1 seconds) before checking again
+end
+
+wait(3.5)  
+-- Tạo ScreenGui cho thống kê
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Tạo một TextButton (nút bấm) để bật bảng thống kê
+local button = Instance.new("TextButton")
+button.Parent = screenGui
+button.Size = UDim2.new(0, 50, 0, 50)
+button.Position = UDim2.new(0, 20, 0, 90)
+button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+button.Text = ""
+
+-- Thêm hình ảnh vào nút bấm
+local imageLabel = Instance.new("ImageLabel")
+imageLabel.Parent = button
+imageLabel.Size = UDim2.new(1, 0, 1, 0)
+imageLabel.Image = "rbxassetid://94893197725824"  -- Thay ID với hình ảnh của bạn
+imageLabel.BackgroundTransparency = 1
+
+-- Tạo một Frame cho bảng thống kê
+local statsFrame = Instance.new("Frame")
+statsFrame.Parent = screenGui
+statsFrame.Size = UDim2.new(0, 300, 0, 250)
+statsFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
+statsFrame.BackgroundTransparency = 1  -- Set background to transparent
+
+-- Tạo một ImageLabel làm nền cho Frame với ID hình ảnh Roblox
+local backgroundImage = Instance.new("ImageLabel")
+backgroundImage.Parent = statsFrame
+backgroundImage.Size = UDim2.new(1, 0, 1, 0)
+backgroundImage.Position = UDim2.new(0, 0, 0, 0)
+backgroundImage.Image = "rbxassetid://139250176927189"  -- Hình ảnh từ ID Roblox
+backgroundImage.BackgroundTransparency = 1  -- Không có nền
+
+statsFrame.Visible = false  -- Bảng thống kê ẩn đi ban đầu
+
+-- Dãy màu cầu vồng (Rainbow colors)
+local rainbowColors = {
+    Color3.fromRGB(255, 0, 0),      -- Đỏ
+    Color3.fromRGB(0, 255, 0),      -- Xanh lá cây
+    Color3.fromRGB(0, 0, 255),      -- Xanh dương
+    Color3.fromRGB(238, 130, 238),  -- Tím
+}
+
+local rainbowIndex = 1  -- Biến chỉ số màu hiện tại
+local TweenService = game:GetService("TweenService")
+
+-- Tạo hiệu ứng Tween để thay đổi màu sắc từ từ
+local function createTween(target, color)
+    local tweenInfo = TweenInfo.new(
+        1,                  -- Thời gian chuyển đổi 1 giây
+        Enum.EasingStyle.Linear,  -- Kiểu easing
+        Enum.EasingDirection.InOut,  -- Hướng easing
+        -1,                 -- Số lần lặp vô hạn
+        true                -- Lặp lại theo kiểu ngược lại
+    )
+    local goal = {TextColor3 = color}
+    local tween = TweenService:Create(target, tweenInfo, goal)
+    tween:Play()
+end
+
+-- Thêm tiêu đề "Bảng Thống Kê Số Liệu"
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Parent = statsFrame
+titleLabel.Size = UDim2.new(1, 0, 0, 30)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "Bảng Thống Kê Số Liệu"
+titleLabel.TextColor3 = rainbowColors[rainbowIndex]
+titleLabel.TextSize = 20
+titleLabel.TextXAlignment = Enum.TextXAlignment.Center
+titleLabel.TextYAlignment = Enum.TextYAlignment.Center
+
+-- Thêm một Label để hiển thị thời gian hiện tại trong server
+local timeLabel = Instance.new("TextLabel")
+timeLabel.Parent = statsFrame
+timeLabel.Size = UDim2.new(1, 0, 0, 30)
+timeLabel.Position = UDim2.new(0, 0, 0.15, 0)
+timeLabel.BackgroundTransparency = 1
+timeLabel.Text = "Thời gian hiện tại: 0s"
+timeLabel.TextColor3 = rainbowColors[rainbowIndex]
+timeLabel.TextSize = 16
+timeLabel.TextXAlignment = Enum.TextXAlignment.Center
+timeLabel.TextYAlignment = Enum.TextYAlignment.Center
+
+-- Thêm một Label để hiển thị số Lucky Arrow
+local luckyArrowLabel = Instance.new("TextLabel")
+luckyArrowLabel.Parent = statsFrame
+luckyArrowLabel.Size = UDim2.new(1, 0, 0, 30)
+luckyArrowLabel.Position = UDim2.new(0, 0, 0.3, 0)
+luckyArrowLabel.BackgroundTransparency = 1
+luckyArrowLabel.Text = "Lucky Arrows: 0"
+luckyArrowLabel.TextColor3 = rainbowColors[rainbowIndex]
+luckyArrowLabel.TextSize = 16
+luckyArrowLabel.TextXAlignment = Enum.TextXAlignment.Center
+luckyArrowLabel.TextYAlignment = Enum.TextYAlignment.Center
+
+-- Thêm một Label để hiển thị số tiền của người chơi
+local moneyLabel = Instance.new("TextLabel")
+moneyLabel.Parent = statsFrame
+moneyLabel.Size = UDim2.new(1, 0, 0, 30)
+moneyLabel.Position = UDim2.new(0, 0, 0.45, 0)
+moneyLabel.BackgroundTransparency = 1
+moneyLabel.Text = "Money: 0"
+moneyLabel.TextColor3 = rainbowColors[rainbowIndex]
+moneyLabel.TextSize = 16
+moneyLabel.TextXAlignment = Enum.TextXAlignment.Center
+moneyLabel.TextYAlignment = Enum.TextYAlignment.Center
+
+-- Thêm một Label để hiển thị số tiền đã cộng thêm
+local earnedMoneyLabel = Instance.new("TextLabel")
+earnedMoneyLabel.Parent = statsFrame
+earnedMoneyLabel.Size = UDim2.new(1, 0, 0, 30)
+earnedMoneyLabel.Position = UDim2.new(0, 0, 0.6, 0)
+earnedMoneyLabel.BackgroundTransparency = 1
+earnedMoneyLabel.Text = "Số tiền đã cộng: 0"
+earnedMoneyLabel.TextColor3 = rainbowColors[rainbowIndex]
+earnedMoneyLabel.TextSize = 16
+earnedMoneyLabel.TextXAlignment = Enum.TextXAlignment.Center
+earnedMoneyLabel.TextYAlignment = Enum.TextYAlignment.Center
+
+-- Lưu thời gian khi người chơi vào game và số tiền ban đầu
+local player = game.Players.LocalPlayer
+local startTime = tick()  -- Thời gian người chơi vào game (tính từ khi game bắt đầu)
+local initialMoney = player:WaitForChild("PlayerStats"):WaitForChild("Money").Value  -- Số tiền ban đầu
+
+-- Cập nhật thông tin thống kê
+local function updateStats()
+    -- Hiển thị thời gian hiện tại trong server
+    local timePassed = math.floor(tick() - startTime)  -- Tính toán thời gian trôi qua kể từ khi người chơi vào game
+    timeLabel.Text = "Thời gian hiện tại: " .. timePassed .. "s"
+    
+    -- Hiển thị số Lucky Arrow trong Backpack
+    local luckyArrowCount = 0
+    for _, item in ipairs(player.Backpack:GetChildren()) do
+        if item.Name == "Lucky Arrow" then  -- Kiểm tra tên vật phẩm đúng
+            luckyArrowCount = luckyArrowCount + 1
+        end
+    end
+    luckyArrowLabel.Text = "Lucky Arrows: " .. luckyArrowCount
+    
+    -- Hiển thị số tiền trong PlayerStats.Money
+    local moneyValue = player:WaitForChild("PlayerStats"):WaitForChild("Money")
+    local money = moneyValue and moneyValue.Value or 0
+    moneyLabel.Text = "Money: " .. money
+
+    -- Tính số tiền đã cộng thêm kể từ khi vào game
+    local earnedMoney = money - initialMoney  -- Số tiền đã thay đổi so với lúc bắt đầu
+    earnedMoneyLabel.Text = "Số tiền đã cộng: " .. earnedMoney
+end
+
+-- Tạo một sự kiện khi nút bấm được nhấn
+button.MouseButton1Click:Connect(function()
+    -- Hiển thị hoặc ẩn bảng thống kê
+    statsFrame.Visible = not statsFrame.Visible
+    if statsFrame.Visible then
+        -- Cập nhật thông tin thống kê khi bảng hiển thị
+        updateStats()
+    end
+end)
+
+-- Cập nhật màu sắc chữ mỗi giây (thay đổi màu theo rainbow)
+game:GetService("RunService").Heartbeat:Connect(function()
+    if statsFrame.Visible then
+        updateStats()
+
+        -- Thay đổi màu chữ theo dải cầu vồng
+        rainbowIndex = rainbowIndex + 1
+        if rainbowIndex > #rainbowColors then
+            rainbowIndex = 1
+        end
+
+        -- Cập nhật màu cho các label
+        titleLabel.TextColor3 = rainbowColors[rainbowIndex]
+        timeLabel.TextColor3 = rainbowColors[rainbowIndex]
+        luckyArrowLabel.TextColor3 = rainbowColors[rainbowIndex]
+        moneyLabel.TextColor3 = rainbowColors[rainbowIndex]
+        earnedMoneyLabel.TextColor3 = rainbowColors[rainbowIndex]
+    end
+end)
+

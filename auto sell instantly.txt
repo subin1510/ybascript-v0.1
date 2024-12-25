@@ -1,0 +1,65 @@
+wait(10)
+
+getgenv().farmitems = {
+    -- items to farm and sell
+    ["Rokakaka"] = true,
+    ["Pure Rokakaka"] = true,
+    ["Diamond"] = true,
+    ["Dio's Diary"] = true,
+    ["Steel Ball"] = true,
+    ["Rib Cage of The Saint's Corpse"] = true,
+    ["Stone Mask"] = true,
+    ["Gold Coin"] = true,
+    ["Quinton's Glove"] = true,
+    ["Ancient Scroll"] = true,
+    ["Caesar's Headband"] = true,
+    ["Mysterious Arrow"] = true,
+    ["Zeppeli's Hat"] = true,
+    ["Clackers"] = true
+}
+
+function GetPlayer()
+    return game:GetService("Players").LocalPlayer
+end
+
+function GetCharacter()
+    local player = GetPlayer()
+    return player and (player.Character or player.CharacterAdded:Wait())
+end
+
+local SelectedItems = {}
+for itemName, canSell in pairs(getgenv().farmitems) do
+    if canSell then
+        table.insert(SelectedItems, itemName)
+    end
+end
+
+local function SellItems()
+    local Player = GetPlayer()
+    local Character = GetCharacter()
+
+    if not Character then return end -- Ensure Character exists
+    local Humanoid = Character:FindFirstChild("Humanoid")
+    if not Humanoid then return end -- Ensure Humanoid exists
+
+    -- Iterate over selected items and sell
+    for _, itemName in ipairs(SelectedItems) do
+        local Tool = Player.Backpack:FindFirstChild(itemName)
+        if Tool then
+            -- Equip the tool if found in the backpack
+            Humanoid:EquipTool(Tool)
+            
+            -- Find RemoteEvent in the character to sell items
+            local RemoteEvent = Character:FindFirstChild("RemoteEvent")
+            if RemoteEvent then
+                RemoteEvent:FireServer("EndDialogue", {NPC = "Merchant", Option = "Option1", Dialogue = "Dialogue5"})
+            else
+                warn("RemoteEvent not found in Character!")
+            end
+        end
+    end
+end
+
+while wait(0.5) do
+    SellItems()
+end

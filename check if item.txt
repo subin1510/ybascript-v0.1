@@ -1,0 +1,221 @@
+-- Wait until "LoadingScreen1" becomes nil
+while game.Players.LocalPlayer.PlayerGui:FindFirstChild("LoadingScreen1") ~= nil do
+    wait(0.1)  -- Wait for a small amount of time (0.1 seconds) before checking again
+end
+
+wait(25)  
+local player = game.Players.LocalPlayer  -- hoặc cách khác để xác định player
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local playerStats = LocalPlayer:FindFirstChild("PlayerStats")
+local money = playerStats and playerStats:FindFirstChild("Money")
+local luckyArrowCount = 0  -- Đếm số Lucky Arrow
+local initialMoney = money and money.Value or 0  -- Lưu số tiền ban đầu khi bắt đầu
+local moneyEarned = money and money.Value - initialMoney or 0  -- Tránh trường hợp biến 'money' là nil
+
+local imageUrls = {
+    "https://cdn.discordapp.com/attachments/1303015333346676857/1313575764280741918/image.png?ex=6750a243&is=674f50c3&hm=3ab8c1ba26cff9c96ec3b29b19659542f317803df53576b2f17afc0ec2085f18&", -- Ví dụ hình ảnh 1
+    "https://cdn.discordapp.com/attachments/1304774101772140545/1313546068302233620/image.png?ex=6750869b&is=674f351b&hm=e88a07acd2c5c3920cdafc0fa9eaf7cf9bdf2824445a9f6abd37efbbea93ae70&", -- Ví dụ hình ảnh 2
+    "https://cdn.discordapp.com/attachments/1303015333346676857/1313576552335802388/image.png?ex=6750a2ff&is=674f517f&hm=f002ab3b19eaf522c11d09352f280e5ad14790fe689af58f65c58f9cc9307d99&",
+    "https://cdn.discordapp.com/attachments/1303015333346676857/1313576826970439741/image.png?ex=6750a340&is=674f51c0&hm=bef744745ecf1087e58ad0948aeff3713d561de65827b1034603270c8465b7c1&",
+    "https://cdn.discordapp.com/attachments/1303015333346676857/1313576938677211238/image.png?ex=6750a35b&is=674f51db&hm=5d097734ae2549400a95f2a99a601b64c74631c2439a7d08ddafc98b9bdbfd01&",
+    "https://cdn.discordapp.com/attachments/1303015333346676857/1313577167203995739/image.png?ex=6750a391&is=674f5211&hm=a9f7cd0fa9fdc8a6a35e30b19495d4a58cf21df7553af2cd15ed2214b8d0a633&",
+    "https://cdn.discordapp.com/attachments/1303015333346676857/1313577759808684133/image.png?ex=6750a41f&is=674f529f&hm=07d81e88b257888e84031045deb8c8b28e2e601421d039c2de900e77aa37accd&"  -- Ví dụ hình ảnh 3
+}
+
+local OSTime = os.time()
+
+local url = "https://discord.com/api/webhooks/1313575227715883169/_lhoJW-xTZCUB2vncBE95SyJMyhFHR508kbdTxqrFIQQUHjqS6oXzyx2x7tdAml_R0v4"
+local userId = "<@1201114732455788574>"
+
+-- Hàm gửi tin nhắn (message) qua webhook
+function SendMessage(url, message)
+    local http = game:GetService("HttpService")
+    local headers = {
+        ["Content-Type"] = "application/json"
+    }
+    local data = {
+        ["content"] = message
+    }
+    local body = http:JSONEncode(data)
+    local response = request({
+        Url = url,
+        Method = "POST",
+        Headers = headers,
+        Body = body
+    })
+    print("Sent")
+end
+
+-- Hàm gửi tin nhắn có Embed qua webhook
+function SendMessageEMBED(url, embed)
+    local http = game:GetService("HttpService")
+    local headers = {
+        ["Content-Type"] = "application/json"
+    }
+    local data = {
+        ["embeds"] = {
+            {
+                ["title"] = embed.title,
+                ["description"] = embed.description,
+                ["color"] = embed.color,
+                ["fields"] = embed.fields,
+                ["footer"] = {
+                    ["text"] = embed.footer.text
+                },
+                ["image"] = {
+                    ["url"] = embed.imageUrl
+                }
+            }
+        }
+    }
+    local body = http:JSONEncode(data)
+    local response = request({
+        Url = url,
+        Method = "POST",
+        Headers = headers,
+        Body = body
+    })
+    print("Sent")
+end
+
+-- Hàm để kiểm tra điều kiện và gửi tin nhắn qua webhook
+function CheckAndSendWebhook()
+    local luckyArrowCount = 0
+    local moneyStatus = money and money.Value == 1000000 and "Đầy tiền rồi" or "Chưa đầy"
+    local backpack = LocalPlayer:FindFirstChild("Backpack")
+    if backpack then
+        -- Duyệt qua tất cả các đối tượng trong Backpack
+        for _, item in pairs(backpack:GetChildren()) do
+            if item.Name == "Lucky Arrow" then
+                luckyArrowCount = luckyArrowCount + 1  -- Đếm số Lucky Arrow
+            end
+        end
+    end
+
+    -- Chọn ngẫu nhiên một URL hình ảnh từ danh sách
+    local randomImageUrl = imageUrls[math.random(1, #imageUrls)]
+    
+    -- Kiểm tra số Lucky Arrow
+    local fullLuckyArrow = luckyArrowCount >= 9
+
+    -- Tính toán số tiền đã kiếm được
+local moneyEarned = money.Value - initialMoney  -- Số tiền kiếm được sau khi đã trừ tiền ban đầu
+
+
+    if money and luckyArrowCount >= 9 and money.Value == 1000000 then
+        -- Nếu đầy đủ tiền và Lucky Arrows
+        SendMessage(url, userId)
+        local embed = {
+            ["title"] = "YBA AUTO FARM SCRIPT",
+            ["description"] = "Bảng Thống Kê Số Liệu:",
+            ["color"] = 16776960, -- Màu vàng cho thông báo đặc biệt
+            ["fields"] = {
+                {
+                    ["name"] = "Lucky Arrows & Money:",
+                    ["value"] = "🤑FULL MONEY & LUCKY ARROW🤑"
+                },
+                {
+                    ["name"] = "Money Earned:",
+                    ["value"] = "Số tiền đã kiếm được: " .. moneyEarned
+                }
+            },
+            ["footer"] = {
+                ["text"] = "Subin | " .. os.date('%Y-%m-%d %H:%M:%S', OSTime)
+            },
+            ["imageUrl"] = randomImageUrl
+        }
+        SendMessageEMBED(url, embed)
+        SendMessage(url, userId)
+    else
+        -- Nếu chưa đủ điều kiện
+        local embed = {
+            ["title"] = "YBA AUTO FARM SCRIPT",
+            ["description"] = "Bảng Thống Kê Số Liệu:",
+            ["color"] = 65280,
+            ["fields"] = {
+                {
+                    ["name"] = "Lucky Arrows & Money:",
+                    ["value"] = "Lucky Arrows : " .. luckyArrowCount .. "\nMoney : " .. money.Value .. "\nSố tiền trong server nhặt được : " .. moneyEarned
+                }
+            },
+            ["footer"] = {
+                ["text"] = "Subin | " .. os.date('%Y-%m-%d %H:%M:%S', OSTime)
+            },
+            ["imageUrl"] = randomImageUrl
+        }
+        SendMessageEMBED(url, embed)
+    end
+end
+
+
+
+-- Cài đặt các đối tượng cần thiết
+local workspace = game:GetService("Workspace")
+local players = game:GetService("Players")
+
+local ignoreItems = {
+    "Blue Candy",
+    "Red Candy",
+    "Yellow Candy",
+    "Green Candy"
+}
+
+-- Hàm kiểm tra và đếm số lượng vật phẩm hợp lệ
+local function countValidItems()
+    local validCount = 0
+    
+    -- Duyệt qua tất cả các vật phẩm trong Items
+    for _, item in pairs(workspace.Item_Spawns.Items:GetChildren()) do
+        -- Kiểm tra nếu item có ProximityPrompt
+        local proximityPrompt = item:FindFirstChild("ProximityPrompt")
+        if proximityPrompt then
+            -- Kiểm tra ObjectText của ProximityPrompt
+            local objectText = proximityPrompt.ObjectText
+            if objectText and not table.find(ignoreItems, objectText) then
+                validCount = validCount + 1
+            end
+        end
+    end
+    
+    return validCount
+end
+
+-- Hàm teleport sang server khác
+local function teleportToAnotherServer()
+    game:GetService("TeleportService"):Teleport(1601192056)
+end
+
+-- Hàm kiểm tra và teleport nếu cần
+local function checkAndTeleport()
+    local previousValidCount = countValidItems()
+    local waitTime = 4  -- Thời gian chờ 5 giây
+
+    -- Kiểm tra mỗi giây trong vòng 5 giây
+    for i = 1, waitTime do
+        wait(1)  -- Đợi 1 giây
+        local currentValidCount = countValidItems()
+        
+        -- Nếu số lượng vật phẩm hợp lệ thay đổi trong vòng 5 giây, không teleport
+        if currentValidCount ~= previousValidCount then
+            return  -- Nếu có thay đổi, thoát hàm và không teleport
+        end
+    end
+    
+    -- Nếu không có thay đổi sau 3 giây, teleport
+    CheckAndSendWebhook()
+    teleportToAnotherServer()
+end
+
+-- Vòng lặp chính để kiểm tra và teleport
+while true do
+    local validItems = countValidItems()
+    
+    -- Nếu số lượng vật phẩm hợp lệ nhỏ hơn 3 thì kiểm tra và teleport
+    if validItems < 3 then
+        checkAndTeleport()
+    end
+    
+    -- Đợi một chút trước khi kiểm tra lại
+    wait(5)  -- Kiểm tra lại sau 1 giây
+end

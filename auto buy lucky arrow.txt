@@ -1,0 +1,71 @@
+wait(10)
+
+local function buyarrow()
+    local player = game:GetService("Players").LocalPlayer
+    local backpack = player:FindFirstChild("Backpack")
+    local teleportService = game:GetService("TeleportService")
+    local gameId = 1601192056  -- ID of the server to teleport to
+
+    -- Check if the player has a Backpack
+    if not backpack then
+        print("No backpack")
+        return
+    end
+
+    -- Check if the player's money is greater than or equal to 50,000
+    local money = player:FindFirstChild("PlayerStats") and player.PlayerStats:FindFirstChild("Money")
+    if not money then
+        print("Money stat not found.")
+        return
+    end
+
+    -- Wait until the player's money reaches at least 50,000
+    while money.Value < 50000 do
+        wait(1)  -- Check every second if the money has increased
+    end
+
+    -- After reaching 50,000 or more money, proceed with buying the Lucky Arrow
+    print("Enough money, proceeding to buy Lucky Arrow...")
+
+    -- Count the number of "Lucky Arrow" in the player's backpack
+    local arrowcount = 0
+    for _, item in ipairs(backpack:GetChildren()) do
+        if item.Name == "Lucky Arrow" then
+            arrowcount = arrowcount + 1
+        end
+    end
+
+    if arrowcount >= 9 then
+        -- Look for "Lucky Arrow" in the "Item_Spawns.Items"
+        local itemsFolder = workspace:FindFirstChild("Item_Spawns") and workspace.Item_Spawns:FindFirstChild("Items")
+        if itemsFolder then
+            for _, model in ipairs(itemsFolder:GetChildren()) do
+                if model:IsA("Model") then
+                    local proximityPrompt = model:FindFirstChildOfClass("ProximityPrompt")
+                    if proximityPrompt and proximityPrompt.ObjectText == "Lucky Arrow" then
+                        -- Found the Lucky Arrow, teleporting to the new server
+                        print("Found Lucky Arrow, teleporting to new server...")
+                        teleportService:Teleport(gameId, player)
+                        return
+                    end
+                end
+            end
+        else
+            print("No items folder found.")
+        end
+    else
+        -- If there are not enough Lucky Arrows, buy one
+        player.Character.RemoteEvent:FireServer("PurchaseShopItem", {["ItemName"] = "1x Lucky Arrow"})
+        print("Bought Lucky Arrow")
+    end
+end
+
+while true do
+
+
+    -- Now check for enough money and buy a Lucky Arrow
+    buyarrow()
+
+    -- Wait 0.5 seconds before repeating
+    wait(0.5)
+end

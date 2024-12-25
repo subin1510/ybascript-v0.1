@@ -1,0 +1,16 @@
+local TeleportService = game:GetService("TeleportService")
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local targetGameId = 1601192056  -- ID server mà bạn muốn teleport đến
+local waitTime = 360  -- Thời gian chờ (5 giây)
+
+while true do
+    -- Đợi 5 giây (time)
+    wait(waitTime)
+    -- Teleport tới server mới
+    print("Teleporting to new server...")
+    TeleportService:Teleport(targetGameId, player)
+
+    -- Đợi khi teleport xong, sau đó tiếp tục vòng lặp để chờ 5 giây tiếp theo
+    wait(1)  -- Chờ 1 giây để đảm bảo rằng quá trình teleport đã hoàn thành
+end

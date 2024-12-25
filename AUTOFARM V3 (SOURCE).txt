@@ -1,0 +1,501 @@
+local farmCandy = false
+
+local targetGameId = 2809202155   -- ID game YBA
+local currentGameId = 1601192056  -- ID game hiện tại (hoặc ID game ban đầu)
+local maxWaitTime = 60  -- Maximum time to wait for LoadingScreen1 to be removed (in seconds)
+local teleportInterval1 = 5  -- Time interval between teleport attempts (in seconds)
+
+local TPS = game:GetService("TeleportService")
+local player = game.Players.LocalPlayer
+
+-- Kiểm tra và dịch chuyển nếu cần
+local function checkAndTeleport()
+    -- Kiểm tra nếu player không ở game YBA (PlaceId)
+    if game.PlaceId ~= targetGameId then
+        -- Nếu không ở game YBA, teleport đến game đó
+        TPS:Teleport(targetGameId, player)
+    end
+end
+
+-- Đảm bảo script này luôn kiểm tra mỗi frame
+game:GetService("RunService").Heartbeat:Connect(function()
+    checkAndTeleport()
+end)
+
+-- Wait for the game to load
+repeat
+    wait()
+until game:IsLoaded()
+
+-- Check LoadingScreen1 removal or timeout
+local startTime = tick()
+repeat
+    wait()
+    if game.Players.LocalPlayer.PlayerGui:FindFirstChild("LoadingScreen1") == nil then
+function GetCharacter()
+    local player = GetPlayer()
+    return player and (player.Character or player.CharacterAdded:Wait())
+end
+function GetPlayer()
+    return game:GetService("Players").LocalPlayer
+end
+-- deletes loading shit
+if not GetPlayer().PlayerGui:FindFirstChild("HUD") then
+    local HUD = game:GetService("ReplicatedStorage").Objects.HUD:Clone()
+    HUD.Parent = GetPlayer().PlayerGui
+end
+
+GetCharacter():WaitForChild("RemoteEvent"):FireServer("PressedPlay")
+
+pcall(function()
+    GetPlayer().PlayerGui:FindFirstChild("LoadingScreen1"):Destroy()
+end)   
+
+task.wait(.5)
+
+pcall(function()
+    GetPlayer().PlayerGui:FindFirstChild("LoadingScreen"):Destroy()
+end)
+
+pcall(function()
+    workspace.LoadingScreen.Song.Playing = false
+end)
+
+pcall(function()
+    for i,v in pairs(game.Lighting:GetChildren()) do
+        if v.Name == "DepthOfField" then
+            v.Enabled = false
+        end
+    end
+end)
+        break
+    end
+until tick() - startTime >= maxWaitTime
+
+-- If LoadingScreen1 is still there after the timeout, teleport to another server (infinite loop)
+if game.Players.LocalPlayer.PlayerGui:FindFirstChild("LoadingScreen1") ~= nil then
+    print("Timeout reached. Starting teleport attempts...")
+
+    -- Infinite loop to attempt teleportation every 5 seconds
+    while true do
+        game:GetService("TeleportService"):Teleport(currentGameId)
+        print("Teleport attempt made at " .. tick())
+        wait(teleportInterval1)  -- Wait for the next teleport attempt
+    end
+end
+
+
+-- Lấy đối tượng người chơi và các thành phần cần thiết
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+local rootPart = character:WaitForChild("HumanoidRootPart")
+
+
+
+-- Tạo khối object sẽ xuất hiện dưới chân người chơi
+local floatingPlatform = Instance.new("Part")
+floatingPlatform.Size = Vector3.new(3, 0.01, 3)  -- Kích thước của platform (tùy chỉnh)
+floatingPlatform.Anchored = true  -- Đảm bảo object cố định ở vị trí
+floatingPlatform.CanCollide = true  -- Để người chơi có thể đứng trên đó
+floatingPlatform.Transparency = 0  -- Làm cho khối này hiển thị (0 là hoàn toàn không trong suốt)
+floatingPlatform.Material = Enum.Material.SmoothPlastic
+floatingPlatform.Color = Color3.fromRGB(255, 255, 255)  -- Màu sắc của platform (có thể thay đổi)
+floatingPlatform.Position = rootPart.Position - Vector3.new(0, 3.05, 0)  -- Đặt phía dưới chân người chơi
+floatingPlatform.Parent = game.Workspace  -- Thêm khối vào Workspace
+
+-- Đảm bảo đối tượng không bị tác động bởi trọng lực
+floatingPlatform.AssemblyLinearVelocity = Vector3.zero
+floatingPlatform.AssemblyAngularVelocity = Vector3.zero
+
+-- Cập nhật vị trí của khối platform theo người chơi
+function updatePlatformPosition()
+    floatingPlatform.Position = rootPart.Position - Vector3.new(0, 3.025, 0)
+end
+
+-- Liên tục cập nhật vị trí của platform để nó luôn di chuyển theo người chơi
+game:GetService("RunService").Heartbeat:Connect(function()
+    updatePlatformPosition()
+end)
+
+
+-- No Clip Script (only enables No Clipping)
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+
+-- Disable collision for all parts of the character
+for _, part in pairs(character:GetChildren()) do
+    if part:IsA("BasePart") then
+        part.CanCollide = false
+    end
+end
+
+-- Continuously disable collision for all parts of the character (in case parts get re-parented)
+game:GetService("RunService").Heartbeat:Connect(function()
+    for _, part in pairs(character:GetChildren()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = false
+        end
+    end
+end)
+
+
+
+---------- up is noclip and float / esp
+
+
+
+
+
+local positions = {
+    Vector3.new(5, -17, -786),
+    Vector3.new(5, -17, -786),
+    Vector3.new(599, 0, -70),
+    Vector3.new(910, 34, -126),
+    Vector3.new(954, 34, -13),
+    Vector3.new(1147, 117, -115),
+    Vector3.new(536, 0, -62),
+    Vector3.new(560, 7, 121),
+    Vector3.new(465, 0, 132),
+    Vector3.new(459, 0, 39),
+    Vector3.new(364, 0, -20),
+    Vector3.new(285, 0, 62),
+    Vector3.new(194, 0, 3),
+    Vector3.new(129, 6, 75),
+    Vector3.new(186, 0, 139),
+    Vector3.new(294, 0, 204),
+    Vector3.new(269, -26, 308),
+    Vector3.new(266, -26, 423),
+    Vector3.new(265, -26, 499),
+    Vector3.new(235, -26, 554),
+    Vector3.new(13, -26, 554),
+    Vector3.new(54, -14, 460),
+    Vector3.new(120, -18, 298),
+    Vector3.new(-51, -19, 447),
+    Vector3.new(-48, -4, 295),
+    Vector3.new(-22, 0, 118),
+    Vector3.new(-16, 0, 20),
+    Vector3.new(-103, 0, 1),
+    Vector3.new(-112, 0, 143),
+    Vector3.new(-222, 0, 13),
+    Vector3.new(-316, 0, 19),
+    Vector3.new(-265, -6, 121),
+    Vector3.new(-265, -5, -112),
+    Vector3.new(-267, -31, -561),
+    Vector3.new(-270, -31, -338),
+    Vector3.new(-429, 0, 95),
+    Vector3.new(-430, 0, -74),
+    Vector3.new(-343, 0, -142),
+    Vector3.new(-425, 0, -232),
+    Vector3.new(-435, 0, -386),
+    Vector3.new(-598, -26, -319),
+    Vector3.new(-598, -26, -184),
+    Vector3.new(-534, -26, -176),
+    Vector3.new(-579, -26, -125),
+    Vector3.new(-759, -26, -166),
+    Vector3.new(-753, -26, -350),
+    Vector3.new(-674, -26, -428),
+    Vector3.new(-544, -26, -573),
+    Vector3.new(-584, -26, -499),
+    Vector3.new(-766, -26, -558),
+    Vector3.new(-620, -26, -694),
+    Vector3.new(-570, 10, -791),
+    Vector3.new(-370, 0, -787),
+    Vector3.new(-392, 0, -722),
+    Vector3.new(-444, 0, -612),
+    Vector3.new(-310, 0, -476),
+    Vector3.new(-400, 0, -488),
+    Vector3.new(-360, 0, -546),
+    Vector3.new(-192, 0, -640),
+    Vector3.new(-306, 0, -634),
+    Vector3.new(-192, 0, -640),
+    Vector3.new(-135, 0, -601),
+    Vector3.new(-65, 0, -644),
+    Vector3.new(42, 0, -652),
+    Vector3.new(40, 0, -904),
+    Vector3.new(181, 0, -648),
+    Vector3.new(188, 0, -568),
+    Vector3.new(192, 0, -438),
+    Vector3.new(-18, 0, -319),
+    Vector3.new(53, 0, -355),
+    Vector3.new(-65, 0, -384),
+    Vector3.new(-151, 0, -290),
+    Vector3.new(-173, 0, -406),
+    Vector3.new(-159, 0, -474),
+    Vector3.new(-272, 0, -449),
+    Vector3.new(-188, 0, -144),
+    Vector3.new(-93, 0, -101),
+    Vector3.new(83, 0, -115),
+    Vector3.new(97, 0, -177),
+    Vector3.new(194, 0, -150),
+    Vector3.new(306, 0, -213),
+    Vector3.new(256, 5, -241),
+    Vector3.new(448, 31, -283),
+    Vector3.new(580, 0, -308),
+    Vector3.new(538, -3, -431),
+    Vector3.new(439, 0, -432),
+    Vector3.new(416, 0, -407),
+    Vector3.new(205, -34, -255),
+    Vector3.new(-25, -34, -386),
+    Vector3.new(398, -34, -257),
+    Vector3.new(124, -34, -395),
+    Vector3.new(-175, -34, -447),
+    Vector3.new(-112, -34, -309),
+    Vector3.new(93, -34, -85),
+    Vector3.new(212, -34, 42),
+    Vector3.new(323, -34, -97),
+    Vector3.new(177, -34, -181),
+    Vector3.new(324, -32, -197),
+    Vector3.new(393, -32, -172),
+    Vector3.new(-115, -34, -65),
+    Vector3.new(-192, -34, -81),
+    Vector3.new(-402, -34, -77)
+}
+
+
+local currentIndex = 1
+local countdown = 9.30  -- Thời gian đếm ngược bắt đầu từ 9.30 giây
+
+local function teleportToPosition(position)
+    local player = game.Players.LocalPlayer
+    if player and player.Character then
+        local char = player.Character
+        local humanoidRootPart = char:WaitForChild("HumanoidRootPart")
+        humanoidRootPart.CFrame = CFrame.new(position)
+    end
+end
+
+local function teleportSequentially()
+    if currentIndex <= #positions then
+        -- Cập nhật thời gian đếm ngược
+        countdown = countdown - 0.15
+        print("Teleporting to: " .. tostring(positions[currentIndex]))  -- In ra vị trí teleport
+        print("Wait while teleport: " .. string.format("%.2f", countdown))  -- In thời gian còn lại
+
+        -- Teleport đến vị trí hiện tại
+        teleportToPosition(positions[currentIndex])
+        currentIndex = currentIndex + 1
+        wait(0)  -- Chờ 0.15 giây trước khi teleport tới vị trí tiếp theo
+
+        teleportSequentially()  -- Tiếp tục teleport tới vị trí tiếp theo
+    else
+        -- Sau khi teleport xong, khôi phục lại trạng thái
+        print("Teleport complete!")
+        
+        -- Đặt lại trạng thái sau khi hoàn thành
+        currentIndex = 1  -- Đặt lại index về 1
+        countdown = 9.30  -- Đặt lại countdown về giá trị ban đầu
+    end
+end
+
+
+
+local function QLMOT_fake_script() -- ScreenGui.LocalScript 
+    local script = Instance.new('LocalScript', ScreenGui)
+
+    local function travelTo(place) -- Does the math and teleports you in chunks to bypass tp anticheat
+        local plr = game.Players.LocalPlayer.Character.HumanoidRootPart
+        local vector = place.Position - plr.Position
+        local length = vector.Magnitude
+        local num_tp = math.ceil(length / 10000)
+    
+        plr.CFrame = plr.CFrame + vector / num_tp
+    end
+
+    local tpOn = false
+    local sell = false
+
+function mainTP() -- Finds the item
+    while tpOn == true do -- Correct the assignment error (use == for comparison)
+        maxItems() -- Checks if I have max items before starting
+        for _, v in pairs(game.Workspace.Item_Spawns.Items:GetChildren()) do
+            -- Kiểm tra nếu item là Model
+            if v:IsA("Model") then
+                -- Kiểm tra nếu Model có chứa "Part" nào không
+                for _, part in pairs(v:GetChildren()) do
+                    if part:IsA("Part") then
+                        -- Kiểm tra các đối tượng con của Part (PointLight, SurfaceAppearance)
+                        local checkNames = {"PointLight", "SurfaceAppearance"}
+                        for _, name in ipairs(checkNames) do
+                            if part:FindFirstChild(name) then
+                                -- Kiểm tra ProximityPrompt trong Part
+                                local proxPrompt = v:FindFirstChild("ProximityPrompt")
+                                if proxPrompt then
+                                    -- Kiểm tra ObjectText trong ProximityPrompt để xác định món đồ
+                                    local Itemsname2 = proxPrompt.ObjectText
+                                    if Itemsname2 and not isCandy(Itemsname2) then  -- Skip candy if farmCandy is false
+                                        while part:IsDescendantOf(game.Workspace) and tpOn do
+                                            local plr = game.Players.LocalPlayer.Character.HumanoidRootPart
+                                            travelTo(part)
+                                            if (part.Position - plr.Position).Magnitude < 5 then
+                                                maxItems()
+						task.wait(0.2)
+                                                fireproximityprompt(proxPrompt, 4)
+                                            end
+                                            task.wait(0.05)
+                                        end
+                                    end
+                                end
+                                break  -- Nếu đã teleport đến Part, thoát khỏi vòng lặp kiểm tra
+                            end
+                        end
+                    end
+                end
+
+                local meshParts = v:GetChildren()  -- Lấy tất cả các con của đối tượng v
+                for _, child in ipairs(meshParts) do
+                    if child:IsA("MeshPart") then  -- Kiểm tra nếu đối tượng con là MeshPart
+                        -- Kiểm tra các đối tượng con trong MeshPart (PointLight, SurfaceAppearance, SpawnedItemWisps, ManualWeld)
+                        local checkNames = {"PointLight"}
+                        for _, name in ipairs(checkNames) do
+                            if child:FindFirstChild(name) then  -- Nếu tìm thấy đối tượng con cần kiểm tra
+                                local proxPrompt = v:FindFirstChild("ProximityPrompt")  -- Lấy ProximityPrompt từ Model
+                                if proxPrompt then
+                                    -- Kiểm tra ObjectText trong ProximityPrompt để xác định món đồ
+                                    local Itemsname2 = proxPrompt.ObjectText
+                                    if Itemsname2 and (farmCandy or not isCandy(Itemsname2)) then  -- If farmCandy is true, or it's not candy
+                                        while child:IsDescendantOf(game.Workspace) and tpOn do
+                                            local plr = game.Players.LocalPlayer.Character.HumanoidRootPart
+                                            travelTo(child)  -- Di chuyển đến vị trí của MeshPart
+                                            if (child.Position - plr.Position).Magnitude < 5 then  -- Kiểm tra khoảng cách
+                                                maxItems()  -- Gọi hàm maxItems()
+						task.wait(0.2)
+                                                fireproximityprompt(proxPrompt, 4)  -- Kích hoạt proximity prompt
+                                            end
+                                            task.wait(0.05)  -- Chờ một khoảng thời gian trước khi tiếp tục
+                                        end
+                                    end
+                                    break  -- Dừng vòng lặp kiểm tra sau khi tìm thấy và teleport
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        task.wait(0.05) -- Delay to prevent CPU overload
+    end
+end
+
+-- Function to check if the item is a candy
+function isCandy(Itemsname2)
+    local candyTypes = {"Blue Candy", "Yellow Candy", "Red Candy", "Green Candy"}
+    for _, candy in ipairs(candyTypes) do
+        if Itemsname2 == candy then
+            return true
+        end
+    end
+    return false
+end
+
+
+    function maxItems()
+        items = {
+            ["Mysterious Arrow"] = 0,
+            ["Rokakaka"] = 0,
+            ["Gold Coin"] = 0,
+            ["Diamond"] = 0,
+            ["Pure Rokakaka"] = 0,
+            ["Quinton's Glove"] = 0,
+            ["Steel Ball"] = 0,
+            ["Rib Cage of The Saint's Corpse"] = 0,
+            ["Zepellin's Headband"] = 0,
+            ["Zeppeli's Hat"] = 0,
+            ["Caesar's Headband"] = 0,
+            ["Clackers"] = 0,
+            ["Stone Mask"] = 0,
+            ["Ancient Scroll"] = 0,
+            ["Dio's Diary"] = 0,
+            ["Pure Rokakaka"] = 0,
+            ["Lucky Stone Mask"] = 0,
+            ["Gold Umbrella"] = 0
+        }
+
+        local maxLimits = {  -- Add to the list if I missed an item
+            ["Mysterious Arrow"] = 25,
+            ["Rokakaka"] = 25,
+            ["Gold Coin"] = 45,
+            ["Diamond"] = 25,
+            ["Pure Rokakaka"] = 10,
+            ["Quinton's Glove"] = 10,
+            ["Steel Ball"] = 10,
+            ["Rib Cage of The Saint's Corpse"] = 10,
+            ["Zepellin's Headband"] = 10,
+            ["Zeppeli's Hat"] = 10,
+            ["Caesar's Headband"] = 10,
+            ["Clackers"] = 10,
+            ["Stone Mask"] = 10,
+            ["Ancient Scroll"] = 10,
+            ["Dio's Diary"] = 10,			
+            ["Lucky Stone Mask"] = 999,
+            ["Lucky Arrow"] = 999,
+            ["Gold Umbrella"] = 999,
+            ["Left Arm of The Saint's Corpse"] = 999,
+            ["Heart of The Saint's Corpse"] = 999,
+            ["Pelvis of The Saint's Corpse"] = 999
+        }
+
+        for _, item in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+            if items[item.Name] then
+                items[item.Name] = items[item.Name] + 1
+                if (items[item.Name] >= (maxLimits[item.Name] or 25)) and sell then
+                    sellItem(item)
+                end
+            end
+        end
+    end
+
+    function sellItem(item)
+        local plrName = game.Players.LocalPlayer.Name
+        local itemName = game.Players.LocalPlayer.Backpack:FindFirstChild(item.Name)
+        itemName.Parent = game.Workspace.Living:FindFirstChild(plrName)
+
+        local args = {
+            [1] = "EndDialogue",
+            [2] = {
+                ["NPC"] = "Merchant",
+                ["Option"] = "Option2",
+                ["Dialogue"] = "Dialogue5"
+            }
+        }
+
+        game:GetService("Players").LocalPlayer.Character.RemoteEvent:FireServer(unpack(args))
+    end
+
+    -- Tự động bắt đầu teleport và bán item ngay khi script chạy
+    task.wait(1.5)  -- Đợi 14 giây sau khi game bắt đầu
+-- Script Lua cho Roblox để khóa camera ở góc nhìn từ trên xuống
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local camera = game.Workspace.CurrentCamera
+
+-- Đặt độ cao và hướng
+local fixedHeight = 700
+local cameraOffset = Vector3.new(0, fixedHeight, 0)
+
+-- Hàm cập nhật vị trí camera
+local function updateCamera()
+    -- Lấy vị trí của người chơi
+    local playerCharacter = player.Character
+    if playerCharacter and playerCharacter:FindFirstChild("HumanoidRootPart") then
+        local playerPosition = playerCharacter.HumanoidRootPart.Position
+        -- Đặt camera ở vị trí cách người chơi 500 đơn vị theo chiều dọc và nhìn xuống dưới
+        camera.CFrame = CFrame.new(playerPosition + cameraOffset, playerPosition)
+    end
+end
+
+-- Cập nhật camera liên tục
+game:GetService("RunService").RenderStepped:Connect(function()
+    updateCamera()
+end)
+
+    teleportSequentially()
+    wait(0.1)
+    sell = true    -- Bật bán item khi đầy
+    wait(2.25)
+    tpOn = true   -- Bật teleport
+    coroutine.wrap(mainTP)()  -- Bắt đầu teleport tự động
+end
+
+coroutine.wrap(QLMOT_fake_script)()
